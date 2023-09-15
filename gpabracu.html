@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BRAC University GPA Calculator</title>
+    <style>
+        html, body {
+            height: auto;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background-color: #f0f0f0;
+        }
+
+        .container {
+            display: flex;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            max-width: 870px;
+            width: 115%;
+            overflow: hidden;
+        }
+
+        .left-section {
+            flex: 1;
+            padding: 60px;
+            border-top-left-radius: 10px;
+            border-bottom-left-radius: 10px;
+            background-color: AUTO; /* Light Green */
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+
+        .left-section img {
+            max-width: 130%;
+            height: auto;
+        }
+
+        .right-section {
+            flex: 2;
+            padding: 15px;
+            border-top-right-radius: 10px;
+            border-bottom-right-radius: 10px;
+            background-color: #fff;
+        }
+
+        h1 {
+            color: #333;
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        h2 {
+            color: #333;
+            font-size: 24px;
+            margin-top: 20px;
+        }
+        
+
+        .semester-header {
+            font-size: 18px;
+            color: #FF5733;
+            margin-top: 20px;
+        }
+
+        .results {
+            font-size: 16px;
+            color: #009900;
+            margin-top: 17px;
+            text-align: center;
+        }
+
+        .results-text {
+            font-weight: bold;
+            font-size: 28px;
+            color: #007BFF;
+        }
+
+        .course-details {
+            text-align: left;
+            border: 1px solid #ddd;
+            padding: 10px;
+            margin-top: 20px;
+            border-radius: 5px;
+        }
+
+        .course-details label {
+            font-weight: bold;
+        }
+
+        button {
+            background-color: #007BFF;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        input, select {
+            padding: 10px;
+            width: 100%;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: center;
+        }
+
+        th {
+            background-color: #007BFF;
+            color: #fff;
+        }
+
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+
+        .footer {
+            text-align: center;
+            background-color: #f0f0f0;
+            color: #007BFF;
+            padding: 12px 0;
+            font-size: 14px;
+        }
+
+        .footer p {
+            color: #333;
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="left-section">
+            <img src="https://tds-images.thedailystar.net/sites/default/files/styles/big_202/public/feature/images/brac_university_3.jpg?itok=9wLVYVvG&timestamp=1522846855" alt="BRAC University Logo">
+            <h1>BRAC University CGPA Calculator</h1>
+            <h2 class="semester-header">GPA Calculator for One Semester</h2>
+            <h3>This is not a CGPA calculator</h3>
+        </div>
+
+        <div class="right-section">
+            <!-- Individual Course Details -->
+            <div class="course-details">
+                <label for="courseID">Course ID:</label>
+                <input type="text" id="courseID" placeholder="Enter course ID"><br>
+                
+                <label for="gradePoint">Grade Point:</label>
+                <input type="number" step="0.01" id="gradePoint" placeholder="Enter grade point"><br>
+                
+                <label for="creditHours">Credit Hours:</label>
+                <select id="creditHours">
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                </select><br>
+                
+                <button onclick="addCourse()">Add Course</button>
+            </div>
+
+            <!-- Course Table -->
+            <table>
+                <thead>
+                    <tr>
+                        <th>Course ID</th>
+                        <th>Grade Point</th>
+                        <th>Credit Hours</th>
+                    </tr>
+                </thead>
+                <tbody id="courseTableBody">
+                    <!-- Courses will be dynamically added here -->
+                </tbody>
+            </table>
+
+            <!-- Display Total Grade Points and GPA -->
+            <div class="results">
+                <p>Total Grade Points: <span id="totalGradePoints">0</span></p>
+                <p>Total Credit Hours: <span id="totalCreditHours">0</span></p>
+                <p><span class="results-text">Your GPA is: <span id="result">0.00</span></span></p>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>&copy; <a href="https://www.facebook.com/4t716">Khandaker Atik 2023</a></p>
+    </div>
+
+    <script>
+        const courseList = [];
+
+        function addCourse() {
+            const courseID = document.getElementById("courseID").value;
+            const gradePoint = parseFloat(document.getElementById("gradePoint").value);
+            const creditHours = parseFloat(document.getElementById("creditHours").value);
+
+            if (isNaN(gradePoint) || isNaN(creditHours) || courseID.trim() === "") {
+                alert("Please enter valid course details.");
+                return;
+            }
+
+            courseList.push({ courseID, gradePoint, creditHours });
+
+            // Clear input fields
+            document.getElementById("courseID").value = "";
+            document.getElementById("gradePoint").value = "";
+            document.getElementById("creditHours").value = "3";
+
+            // Add the course to the table
+            const courseTableBody = document.getElementById("courseTableBody");
+            const newRow = courseTableBody.insertRow();
+            const cell1 = newRow.insertCell(0);
+            const cell2 = newRow.insertCell(1);
+            const cell3 = newRow.insertCell(2);
+            cell1.innerHTML = courseID;
+            cell2.innerHTML = gradePoint;
+            cell3.innerHTML = creditHours;
+
+            calculateGPA();
+        }
+
+        function calculateGPA() {
+            let totalGradePoints = 0;
+            let totalCreditHours = 0;
+
+            for (const course of courseList) {
+                totalGradePoints += course.gradePoint * course.creditHours;
+                totalCreditHours += course.creditHours;
+            }
+
+            const gpa = totalGradePoints / totalCreditHours;
+
+            document.getElementById("totalGradePoints").innerText = totalGradePoints.toFixed(2);
+            document.getElementById("totalCreditHours").innerText = totalCreditHours;
+            document.getElementById("result").innerText = gpa.toFixed(2);
+        }
+    </script>
+</body>
+</html>
